@@ -1,4 +1,5 @@
 import pyglet
+import pyglet.math
 from freegames import vector
 from math import sin, cos
 
@@ -6,10 +7,10 @@ from math import sin, cos
 win = pyglet.window.Window(500, 500, "Pendulum")
 
 # Bob
-bob = vector(250, 250)
+bob = pyglet.math.Vec2(250, 250)
 
 # Arm
-origin = vector(250, 350)
+origin = pyglet.math.Vec2(250, 250)
 l = 100
 angle = 45
 avel = 0
@@ -21,8 +22,7 @@ def update(dt):
 
     win.clear()
 
-    bob.x = origin.x + l * sin(angle)
-    bob.y = origin.y + -l * cos(angle)
+    bob = pyglet.math.Vec2(origin.x + l * sin(angle), origin.y - l * cos(angle))
 
     pyglet.shapes.Line(origin.x, origin.y, bob.x, bob.y).draw()
     pyglet.shapes.Circle(bob.x, bob.y, 15, color=(234,23,12)).draw()
