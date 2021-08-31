@@ -4,42 +4,38 @@ import pyglet.math
 from freegames import vector
 from math import sin, cos
 
-# Window
-win = pyglet.window.Window(500, 500, "Pendulum")
+class Window(pyglet.window.Window):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-# Bob
-bob = pyglet.math.Vec2(250, 250)
+        self.bob = pyglet.math.Vec2(250, 250)
+        self.origin = pyglet.math.Vec2(250, 250)
+        self.l = 100
 
-# Arm
-origin = pyglet.math.Vec2(250, 250)
-l = 100
-angle = 45
-avel = 0
-acc = 0
+        self.angle = 45
+        self.avel = 0
+        self.acc = 0
 
-# Update
-def update(dt):
-    global angle, avel, acc, bob, origin
+    def update(self, dt):
+        self.clear()
 
-    win.clear()
+        self.bob = pyglet.math.Vec2(self.origin.x + self.l * sin(self.angle),
+                self.origin.y - self.l * cos(self.angle))
+        self.acc = -0.01 * sin(self.angle)
 
-    bob = pyglet.math.Vec2(origin.x + l * sin(angle), origin.y - l * cos(angle))
+        self.angle += self.avel
+        self.avel += self.acc
 
-    pyglet.shapes.Line(origin.x, origin.y, bob.x, bob.y).draw()
-    pyglet.shapes.Circle(bob.x, bob.y, 15, color=(234,23,12)).draw()
+        self.avel *= 0.99
 
-    acc = -0.01 * sin(angle)
+    def on_draw(self):
+        pyglet.shapes.Line(self.origin.x, self.origin.y, self.bob.x, self.bob.y).draw()
+        pyglet.shapes.Circle(self.bob.x, self.bob.y, 15, color=(34, 45, 120)).draw()
 
-    angle += avel
-    avel += acc
+    def on_mouse_press(self, x, y, button, modifiers):
+        self.origin = pyglet.math.Vec2(x, y)
 
-    avel *= 0.99
+win = Window(500, 500, "Pendulum")
 
-@win.event
-def on_mouse_press(x, y, button, modifiers):
-    global origin
-    print(x, y)
-    origin = pyglet.math.Vec2(x, y)
-
-pyglet.clock.schedule_interval(update, 1/60)
+pyglet.clock.schedule_interval(win.update, 1/60)
 pyglet.app.run()
