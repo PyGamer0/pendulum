@@ -1,4 +1,5 @@
 import pyglet
+from pyglet import window
 import pyglet.math
 from freegames import vector
 from math import sin, cos
@@ -18,7 +19,7 @@ acc = 0
 
 # Update
 def update(dt):
-    global angle, avel, acc
+    global angle, avel, acc, bob, origin
 
     win.clear()
 
@@ -33,6 +34,12 @@ def update(dt):
     avel += acc
 
     avel *= 0.99
+
+@win.event
+def on_mouse_press(x, y, button, modifiers):
+    global origin
+    print(x, y)
+    origin = pyglet.math.Vec2(x, y)
 
 pyglet.clock.schedule_interval(update, 1/60)
 pyglet.app.run()
